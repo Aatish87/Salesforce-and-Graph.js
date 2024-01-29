@@ -1,3 +1,5 @@
+## Code to create Bar Chart using Chart.js and LWC
+
 ## Table of Contents
 - Introduction
 - Files
@@ -5,7 +7,7 @@
 - Contributing
 
 Introduction
-This will help you creating and using Chart.js library in Salesforce to create graphs.
+This will help you creating and using Chart.js library in Salesforce to create bar chart.
 
 ## Files
 List and briefly describe the files you've uploaded:
