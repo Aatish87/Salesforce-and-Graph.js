@@ -1,7 +1,3 @@
-# Project Name
-
-Description of your project goes here.
-
 ## Table of Contents
 - Introduction
 - Files
