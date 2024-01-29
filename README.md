@@ -9,7 +9,7 @@ Description of your project goes here.
 - Contributing
 
 Introduction
-Provide a brief overview of your project, its purpose, and any key features.
+This will help you creating and using Chart.js library in Salesforce to create graphs.
 
 ## Files
 List and briefly describe the files you've uploaded:
