@@ -1,8 +1,16 @@
 <template>
-	<div style="margin: auto; width: 90%; padding: 10px;">
-		<canvas class="barChart" lwc:dom="manual"></canvas>
-		<div if:false={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
-			<lightning-spinner alternative-text="Loading" size="medium" variant={loaderVariant}></lightning-spinner>
-		</div>
-	</div>
+    <!-- Container div with styling -->
+    <div style="margin: auto; width: 90%; padding: 10px;">
+
+        <!-- Canvas element for the bar chart with manual DOM handling -->
+        <canvas class="barChart" lwc:dom="manual"></canvas>
+
+        <!-- Loading spinner section, shown when chart is not initialized -->
+        <div if:false={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
+
+            <!-- Lightning spinner component with alternative text, size, and variant -->
+            <lightning-spinner alternative-text="Loading" size="medium" variant={loaderVariant}></lightning-spinner>
+
+        </div>
+    </div>
 </template>
