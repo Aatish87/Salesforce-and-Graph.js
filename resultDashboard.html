@@ -1,33 +1,39 @@
 <template>
 
+	<!-- Lightning card to contain the sections of the template -->
 	<lightning-card>
+
+		<!-- Display result details if available -->
 		<template if:true={ifResult}>
 			<div class="slds-p-horizontal_x-large">
+				
+				<!-- Display calculation details -->
 				<b> Calculation Name - </b> {calculationName}<br />
 				<b> Calculation Date(DD/MM/YYYY) - </b> {calculationDate}<br />
 				<b> Product Name </b> - {productName}<br />
 				<b> Product Volume(Metric Tonnes) - </b> {producWeight}<br />
+
+				<!-- Display Tradelane details based on condition -->
 				<span if:true={tradeLane}>
 					<b> Tradelane - </b> {tradeLane} (From {tradeLaneOriginCountry} To {tradeLaneDestinationCountry})<br/>
 				</span>
 				<span if:false={tradeLane}>
 					<b> Tradelane - </b> (From {fromCountry} To {toCountry})<br/>
 				</span>
-				<!-- <b> Tradelane </b> - {tradeLane}
-				<span if:true={tradeLane}> (From {tradeLaneOriginCountry} To {tradeLaneDestinationCountry})</span><br />
-				<span if:false={tradeLane}> (From {fromCountry} To {toCountry})</span><br /> -->
 				<b> Goodpack Solution - </b> {GoodpackLabel}<br />
 				<b> Competing Solution - </b> {CompetitorLabel}<br />
 				<hr size="10" color="black"><br />
 			</div>
 		</template>
 
+		<!-- Display Life Cycle Impact Assessment chart if available -->
 		<template if:true={LCIAresultChartConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Life Cycle Impact Assessment</div> <br />
 			<c-chart chart-config={LCIAresultChartConfiguration}></c-chart>
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Global Warming Potential chart if available -->
 		<template if:true={GlobalConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Global Warming Potential</div><br />
 			<div style="font-size:15px; text-align:center; ">{GoodpackLabel}:
@@ -35,12 +41,10 @@
 				{CompetitorLabel}: <span style="font-weight: bold; ">{globalMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={GlobalConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; "> Y-axis unit:
-				<span style="font-weight: bold; ">kg CO<sub>2</sub> eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Ozone Configuration chart if available -->
 		<template if:true={OzoneConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Ozone Formation, Human Health
 			</div><br />
@@ -49,12 +53,10 @@
 				{CompetitorLabel}: <span style="font-weight: bold; ">{ozoneMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={OzoneConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg NOx eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Fine Particulate Configuration chart if available -->
 		<template if:true={FineParticulateConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Fine Particulate Matter
 				Formation</div><br />
@@ -62,13 +64,11 @@
 				<span style="font-weight: bold; ">{fineGoodpackTotal}</span> |
 				{CompetitorLabel}: <span style="font-weight: bold; ">{fineMetaldrumTotal}</span>
 			</div>
-			<c-chart chart-config={FineParticulateConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg PM<sub>2.5</sub> eq.</span>
-			</div> -->
+			<c-chart chart-config={FineParticulateConfiguration}></c-chart>\
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Terrestrial Configuration chart if available -->
 		<template if:true={TerrestrialConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Terrestrial Acidification
 			</div><br />
@@ -77,12 +77,11 @@
 				{CompetitorLabel}: <span style="font-weight: bold; ">{terrestrialMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={TerrestrialConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg SO<sub>2</sub> eq.</span>
 			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Fresh Water Configuration chart if available -->
 		<template if:true={FreshwaterConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Freshwater
 				Eutrophication</div><br />
@@ -92,12 +91,10 @@
 				<span style="font-weight: bold; ">{freshwaterMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={FreshwaterConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg P eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Land Configuration chart if available -->
 		<template if:true={LandConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Land Use</div><br />
 			<div style="font-size:15px; text-align:center; ">{GoodpackLabel}:
@@ -105,12 +102,10 @@
 				{CompetitorLabel}: <span style="font-weight: bold; ">{landMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={LandConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">m<sup>2</sup>a crop eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Mineral Configuration chart if available -->
 		<template if:true={MineralConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Mineral
 				Resource Scarcity</div><br />
@@ -120,12 +115,10 @@
 				<span style="font-weight: bold; ">{mineralMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={MineralConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg Cu eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Fossil Configuration chart if available -->
 		<template if:true={FossilConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Fossil
 				Resource Scarcity</div><br />
@@ -135,12 +128,10 @@
 				<span style="font-weight: bold; ">{fossilMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={FossilConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">kg oil eq.</span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
+		<!-- Display Water Configuration chart if available -->
 		<template if:true={WaterConfiguration}>
 			<div style="font-size:25px; font-weight:bold; text-align:center; ">Water
 				Consumption</div><br />
@@ -150,22 +141,9 @@
 				<span style="font-weight: bold; ">{waterMetaldrumTotal}</span>
 			</div>
 			<c-chart chart-config={WaterConfiguration}></c-chart>
-			<!-- <div style="font-size:13px; ">Y-axis unit:
-				<span style="font-weight: bold; ">m<sup>3</sup></span>
-			</div> -->
 			<hr size="10" color="black"><br />
 		</template>
 
-		 <template if:true={ifResult}>
-			 <div class="slds-p-left_xx-large slds-p-right_xx-large ">
-				 <b class="textColor">Disclaimer</b><br><br>
-				 <p class="textColor">The purpose of this document is to provide indicative data on the environmental performance of Goodpack containers compared to competing solutions.<br><br>
-				 The calculations presented in this report are based on a Lifecycle Assessment (“LCA”) carried out consistent with the international standards for LCA: ISO 14040:2006 and ISO 14044:2006, which was verified by a panel of experts in line with ISO 14071:2014.  The results in this report are however also based on facts, circumstances and assumptions which may be subject to change. Any such changes may adversely affect the accuracy of the calculations.<br><br>
-				 While Goodpack has exercised due and customary care in preparing this report, Goodpack has not, save as specifically stated, independently verified information provided by others. No warranty or representation, express or implied, is made by the Goodpack group, including in all cases its affiliates and all their directors, officers, employees, and representatives, in relation to the content of this report. Therefore, the Goodpack group shall not be liable for the information contained in this report, nor for any party’s reliance thereto. Nothing in this report is intended to constitute advice (legal or otherwise) nor a source of liability for the Goodpack group.
-				 </p><br>
-			 </div>
-			 
-		</template> 
 	</lightning-card>
 
 </template>
