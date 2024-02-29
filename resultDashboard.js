@@ -3,22 +3,26 @@ import getCalculationRecords from '@salesforce/apex/resultTableController.getRel
 
 export default class OpportunityBarChart extends LightningElement {
 
-    //used to store initial results
+    // Decorator to expose a public property to the parent component
     @api paramValue;
+
+    // Arrays to store initial results for Goodpack and Competitor
     goodPackData = [];
     competitorData = [];
     stackedGoodPackData = [];
     stackedCompetitorData = [];
+
+    // Maps to temporarily store values for Goodpack and Competitor
     tempGoodpackMap = new Map();
     tempCompetitorMap = new Map();
     tempGpMap = new Map();
     tempCmpMap = new Map();
-    // finalGpMap = new Map();
-    // finalCmpMap = new Map();
+
+    // Variables to store temporary values for stacked bar chart
     tempGpValue;
     tempCmpValue;
 
-    //used to render different charts
+    // Configuration objects for different charts
     LCIAresultChartConfiguration;
     GlobalConfiguration;
     OzoneConfiguration;
@@ -30,7 +34,7 @@ export default class OpportunityBarChart extends LightningElement {
     FossilConfiguration;
     WaterConfiguration;
 
-    //used to store the value of products in stacked-bar chart
+    // Arrays to store values for different stages in the stacked bar chart
     tempRawMaterial = [];
     tempPackaging = [];
     tempDistribution = [];
@@ -38,7 +42,7 @@ export default class OpportunityBarChart extends LightningElement {
     tempCollection = [];
     tempEol = [];
 
-    //used to show the total of each bar in stacked-bar chart
+    // Variables to store totals for each category in the stacked bar chart
     globalGoodpackTotal = 0.0;
     globalMetaldrumTotal = 0.0;
     ozoneGoodpackTotal = 0.0;
@@ -79,6 +83,7 @@ export default class OpportunityBarChart extends LightningElement {
         'EoLContainerTool'
     ];
 
+    // Information about the calculation
     GoodpackLabel;
     CompetitorLabel;
     calculationName;
@@ -92,11 +97,12 @@ export default class OpportunityBarChart extends LightningElement {
     producWeight;
     ifResult = false;
 
+    // Lifecycle hook called when the component is connected to the DOM
     connectedCallback() {
-
+        // Calling the Apex method to get calculation records based on paramValue
         getCalculationRecords({ carbonCalculatorId: this.paramValue })
             .then(result => {
-                console.log('tradeLane : ', result.calTradelane);
+                // Handling the result and filling data for different charts
                 this.ifResult = true;
                 this.GoodpackLabel = result.GoodpackLabel;
                 this.CompetitorLabel = result.CompetitorLabel;
@@ -109,8 +115,6 @@ export default class OpportunityBarChart extends LightningElement {
                 this.toCountry = result.calToCountry;
                 this.productName = result.calProduct;
                 this.producWeight = result.calProductWeight.toLocaleString();
-                // nfObject = new Intl.NumberFormat('en-US'); 
-                // this.producWeight = nfObject.format(this.producWeight); 
                 this.fillData(result);
                 this.setLCIAresultChartConfiguration();
 
@@ -132,16 +136,10 @@ export default class OpportunityBarChart extends LightningElement {
                 this.setFossilConfiguration();
                 this.fillStackedData(result, 'Water consumption');
                 this.setWaterConfiguration();
-
-                console.log('goodpack data== ' + JSON.stringify(this.goodPackData));
-                console.log('competitor data== ' + JSON.stringify(this.competitorData));
-                // console.log('stacked goodpack data== ' + JSON.stringify(this.stackedGoodPackData));
-                // console.log('stacked competitor data== ' + JSON.stringify(this.stackedCompetitorData));
-
             })
+            // Handling errors and resetting configurations
             .catch(error => {
                 this.error = error;
-                console.log('error== ' + JSON.stringify(this.error));
                 this.LCIAresultChartConfiguration = undefined;
 
                 this.GlobalConfiguration = undefined;
@@ -157,8 +155,9 @@ export default class OpportunityBarChart extends LightningElement {
 
     }
 
+    // Method to fill data for the initial Goodpack and Competitor arrays
     fillData(result) {
-        //fill temp data map that will be used to convert the values in percentage
+        // fill temp data map that will be used to convert the values in percentage
         this.tempGpMap = new Map();
         this.tempCmpMap = new Map();
         this.finalGpMap = new Map();
@@ -212,6 +211,7 @@ export default class OpportunityBarChart extends LightningElement {
 
     }
 
+    // Method to fill data for the stacked bar chart
     fillStackedData(result, impactCategory) {
         this.tempRawMaterial = [];
         this.tempPackaging = [];
@@ -286,6 +286,7 @@ export default class OpportunityBarChart extends LightningElement {
         });
     }
 
+    // Method to set configuration for the main LCIA result bar chart
     setLCIAresultChartConfiguration() {
         this.LCIAresultChartConfiguration = {
             type: 'bar',
@@ -308,6 +309,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Global Configuration result bar chart
     setGlobalConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -342,6 +344,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Ozone Configuration result bar chart
     setOzoneConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -376,6 +379,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Fine Particulate Configuration result bar chart
     setFineParticulateConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -410,6 +414,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Terrestrial Configurarion result bar chart
     setTerrestrialConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -444,6 +449,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Fresh Water Configuration result bar chart
     setFreshwaterConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -478,6 +484,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Land Configuration result bar chart
     setLandConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -512,6 +519,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Mineral Configuration result bar chart
     setMineralConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -546,6 +554,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Fossil Configuration result bar chart
     setFossilConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
@@ -580,6 +589,7 @@ export default class OpportunityBarChart extends LightningElement {
         };
     }
 
+    // Method to set configuration for Water Configuration result bar chart
     setWaterConfiguration() {
         let a = this.tempRawMaterial[0] + this.tempPackaging[0] + this.tempDistribution[0] + this.tempUsePhase[0] + this.tempCollection[0] + this.tempEol[0];
         let b = this.tempRawMaterial[1] + this.tempPackaging[1] + this.tempDistribution[1] + this.tempUsePhase[1] + this.tempCollection[1] + this.tempEol[1];
