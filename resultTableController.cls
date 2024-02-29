@@ -1,14 +1,26 @@
+/**
+ * Apex class to handle the server-side logic for fetching and processing related CalculationObj__c records
+ * associated with a Carbon_Calculator__c.
+ * @author Your Name
+ * @version 1.0
+ */
 public with sharing class resultTableController {
-    
-    @AuraEnabled(cacheable=true)
+
+    /**
+     * Method to get related CalculationObj__c records based on the provided Carbon_Calculator__c Id.
+     * @param carbonCalculatorId Id of the Carbon_Calculator__c to fetch related CalculationObj__c records.
+     * @return Wrapper containing processed data for Goodpack and Competitor clients.
+     * @AuraEnabled(cacheable=true)
+     */
     public static Wrapper getRelatedCalculationRecords(String carbonCalculatorId) {
         Wrapper finalWrapper = new Wrapper();
-        
-        
+
+        // Fetch related CalculationObj__c records
         List<CalculationObj__c> relatedRecordsList = [SELECT Id, Name, Impact_category__c, Unit__c, Tier__c, Product__c, Value__c, Client__c
                                                       FROM CalculationObj__c 
                                                       WHERE Carbon_Calculator__c = :carbonCalculatorId 
                                                       WITH SECURITY_ENFORCED LIMIT 10000];
+        // Fetch Carbon_Calculator__c details
         List<Carbon_Calculator__c> carbCalList = [SELECT Name, Calculation_Date__c, Product_Type_Name__c,Total_P_Weight__c, Trade_Lane__r.Name,Trade_Lane__r.Origin_Country__c, Trade_Lane__r.Destination_Country__c, B_Country__c, E_Country__c, Container_Name__c, Container_Name_2__c FROM Carbon_Calculator__c
                                                   WHERE Id = :carbonCalculatorId LIMIT 1];
         
@@ -17,53 +29,62 @@ public with sharing class resultTableController {
         }
         return finalWrapper;
     }
-    
+
+    /**
+     * Method to fill the Wrapper with processed data from CalculationObj__c records.
+     * @param calculationRecordsList List of CalculationObj__c records to process.
+     * @param carbonCalulatorList List of Carbon_Calculator__c records for additional details.
+     * @return Wrapper containing processed data for Goodpack and Competitor clients.
+     */
     public static Wrapper fillWrapper(List<CalculationObj__c> calculationRecordsList, List<Carbon_Calculator__c> carbonCalulatorList) {
+        // Maps to store processed data for Goodpack and Competitor clients
         Map<String, GoodpackWrapper> goodpackMap = new Map<String, GoodpackWrapper>();
         Map<String, CompetitorWrapper> competitorMap = new Map<String, CompetitorWrapper>();
         List<GoodpackWrapper> goodpackWrapperList = new List<GoodpackWrapper>();
         List<CompetitorWrapper> competitorWrapperList = new List<CompetitorWrapper>();
         Wrapper finalWrapper = new Wrapper();
-        
+
+        // List of Impact Categories
         List<String> impactCategoryList = new List<String>{
             'Global warming',
-                'Ozone formation, Human health',
-                'Fine particulate matter formation',
-                'Terrestrial acidification',
-                'Freshwater eutrophication',
-                'Land use',
-                'Mineral resource scarcity',
-                'Fossil resource scarcity',
-                'Water consumption'
-                };
-                    
-                    
-                    for(String catgry : impactCategoryList) {
-                        GoodpackWrapper gpwrap = new GoodpackWrapper();
-                        gpwrap.ImpactCategory = catgry;
-                        gpwrap.Unit = '';
-                        gpwrap.Total = 0.0;
-                        gpwrap.RawMaterialsManufacturingTool = 0.0;
-                        gpwrap.PackingAccessoryTool = 0.0;
-                        gpwrap.DistributionToPackerTool = 0.0;
-                        gpwrap.UsePhaseTool = 0.0;
-                        gpwrap.CollectionReconditioningTool = 0.0;
-                        gpwrap.EoLContainerTool = 0.0;
-                        goodpackMap.put(catgry, gpwrap);
-                        
-                        CompetitorWrapper cmpwrap = new CompetitorWrapper();
-                        cmpwrap.ImpactCategory = catgry;
-                        cmpwrap.Unit = '';
-                        cmpwrap.Total = 0.0;
-                        cmpwrap.RawMaterialsManufacturingTool = 0.0;
-                        cmpwrap.PackingAccessoryTool = 0.0;
-                        cmpwrap.DistributionToPackerTool = 0.0;
-                        cmpwrap.UsePhaseTool = 0.0;
-                        cmpwrap.CollectionReconditioningTool = 0.0;
-                        cmpwrap.EoLContainerTool = 0.0;
-                        competitorMap.put(catgry, cmpwrap);
-                    }
-        
+            'Ozone formation, Human health',
+            'Fine particulate matter formation',
+            'Terrestrial acidification',
+            'Freshwater eutrophication',
+            'Land use',
+            'Mineral resource scarcity',
+            'Fossil resource scarcity',
+            'Water consumption'
+        };
+
+        // Initialize maps with default values for each Impact Category
+        for(String catgry : impactCategoryList) {
+            GoodpackWrapper gpwrap = new GoodpackWrapper();
+            gpwrap.ImpactCategory = catgry;
+            gpwrap.Unit = '';
+            gpwrap.Total = 0.0;
+            gpwrap.RawMaterialsManufacturingTool = 0.0;
+            gpwrap.PackingAccessoryTool = 0.0;
+            gpwrap.DistributionToPackerTool = 0.0;
+            gpwrap.UsePhaseTool = 0.0;
+            gpwrap.CollectionReconditioningTool = 0.0;
+            gpwrap.EoLContainerTool = 0.0;
+            goodpackMap.put(catgry, gpwrap);
+
+            CompetitorWrapper cmpwrap = new CompetitorWrapper();
+            cmpwrap.ImpactCategory = catgry;
+            cmpwrap.Unit = '';
+            cmpwrap.Total = 0.0;
+            cmpwrap.RawMaterialsManufacturingTool = 0.0;
+            cmpwrap.PackingAccessoryTool = 0.0;
+            cmpwrap.DistributionToPackerTool = 0.0;
+            cmpwrap.UsePhaseTool = 0.0;
+            cmpwrap.CollectionReconditioningTool = 0.0;
+            cmpwrap.EoLContainerTool = 0.0;
+            competitorMap.put(catgry, cmpwrap);
+        }
+
+        // Process CalculationObj__c records and populate maps
         for(CalculationObj__c obj : calculationRecordsList) {
             if(obj.Client__c == 'Goodpack') {
                 if(goodpackMap.containsKey(obj.Impact_category__c)) {
@@ -72,6 +93,7 @@ public with sharing class resultTableController {
                     if(obj.Tier__c == 'Tier 0') {
                         wrap.Total += obj.Value__c.setScale(18);
                     }
+                    // Switch on Product__c field to update specific tool values
                     switch on obj.Product__c {
                         when 'Raw Materials & Manufacturing_tool' {
                             wrap.RawMaterialsManufacturingTool = obj.Value__c.setScale(18);
@@ -101,6 +123,7 @@ public with sharing class resultTableController {
                     if(obj.Tier__c == 'Tier 0') {
                         wrap.Total += obj.Value__c.setScale(18);
                     }
+                    // Switch on Product__c field to update specific tool values
                     switch on obj.Product__c {
                         when 'Raw Materials & Manufacturing_tool' {
                             wrap.RawMaterialsManufacturingTool = obj.Value__c.setScale(18);
@@ -124,16 +147,17 @@ public with sharing class resultTableController {
                     competitorMap.put(obj.Impact_category__c, wrap);
                 }
             }
-            
         }
-        
+
+        // Convert maps to lists for serialization
         for(String Key : goodpackMap.keySet()) {
             goodpackWrapperList.add(goodpackMap.get(Key));
         }
         for(String Key : competitorMap.keySet()) {
             competitorWrapperList.add(competitorMap.get(Key));
         }
-        
+
+        // Populate finalWrapper with additional details and processed data
         if(carbonCalulatorList.size() > 0 && carbonCalulatorList[0].Container_Name__c != NULL) {
             finalWrapper.GoodpackLabel = carbonCalulatorList[0].Container_Name__c;    
         } else {
@@ -182,10 +206,13 @@ public with sharing class resultTableController {
             finalWrapper.calToCountry = '';            
         finalWrapper.gpWrapper = goodpackWrapperList;
         finalWrapper.cmpWrapper = competitorWrapperList;
-        
+
         return finalWrapper;
     }
-    
+
+    /**
+     * Wrapper class to hold the processed data for Goodpack and Competitor clients.
+     */
     public class Wrapper {
         @AuraEnabled public String GoodpackLabel {get;set;}
         @AuraEnabled public String CompetitorLabel {get;set;}
@@ -200,10 +227,11 @@ public with sharing class resultTableController {
         @AuraEnabled public String calToCountry {get;set;} //This country will be used only when record is created from Manual entry and there is no tradelane
         @AuraEnabled public List<GoodpackWrapper> gpWrapper {get;set;}
         @AuraEnabled public List<CompetitorWrapper> cmpWrapper {get;set;}
-        
-        
     }
-    
+
+    /**
+     * Wrapper class to hold processed data for Goodpack.
+     */
     public class GoodpackWrapper {
         @AuraEnabled public String ImpactCategory {get;set;}
         @AuraEnabled public String Unit {get;set;}
@@ -215,7 +243,10 @@ public with sharing class resultTableController {
         @AuraEnabled public Decimal CollectionReconditioningTool {get;set;}
         @AuraEnabled public Decimal EoLContainerTool {get;set;}
     }
-    
+
+    /**
+     * Wrapper class to hold processed data for Competitor.
+     */
     public class CompetitorWrapper {
         @AuraEnabled public String ImpactCategory {get;set;}
         @AuraEnabled public String Unit {get;set;}
