@@ -1,7 +1,7 @@
 /**
  * Apex class to handle the server-side logic for fetching and processing related CalculationObj__c records
  * associated with a Carbon_Calculator__c.
- * @author Your Name
+ * @author Aatish
  * @version 1.0
  */
 public with sharing class resultTableController {
