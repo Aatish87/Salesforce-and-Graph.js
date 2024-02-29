@@ -30,7 +30,7 @@ public with sharing class resultTableController {
         return finalWrapper;
     }
 
-    /**
+    /*
      * Method to fill the Wrapper with processed data from CalculationObj__c records.
      * @param calculationRecordsList List of CalculationObj__c records to process.
      * @param carbonCalulatorList List of Carbon_Calculator__c records for additional details.
