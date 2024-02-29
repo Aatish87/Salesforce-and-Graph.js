@@ -6,7 +6,7 @@
  */
 public with sharing class resultTableController {
 
-    /**
+    /*
      * Method to get related CalculationObj__c records based on the provided Carbon_Calculator__c Id.
      * @param carbonCalculatorId Id of the Carbon_Calculator__c to fetch related CalculationObj__c records.
      * @return Wrapper containing processed data for Goodpack and Competitor clients.
